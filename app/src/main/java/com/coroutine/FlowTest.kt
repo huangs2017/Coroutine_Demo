@@ -1,9 +1,13 @@
 package com.coroutine
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
@@ -24,6 +28,15 @@ class FlowTest {
             .take(2)
             .onEach { println(it) }
             .collect() // flow开始执行
+
+
+        flow.onEach { println(it) }
+            .flowOn(Dispatchers.IO) // flow切换协程-方法1
+            .collect()
+
+        val scope = CoroutineScope(Dispatchers.IO)
+        flow.onEach { println(it) }
+            .launchIn(scope) // flow切换协程-方法2
     }
 
     suspend fun request(): Int {
